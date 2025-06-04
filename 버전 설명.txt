@@ -2,3 +2,28 @@ v1:
 https://www.youtube.com/watch?v=yXPCg5eupGM
 코딩 애플 : 웹 소켓 설명
 간단한 통신 - 버튼을 눌럿을 때 vscode의 console에 문구 띄우기
+
+실행 방법:
+index.html 들어가서 node server.js
+그리고 localhost:8080 들어가서 버튼 클릭 후 콘솔 확인
+
+v2
+백엔드 세팅 : 데이터베이스 세팅, 웹소켓 세팅
+프론트엔드 세팅: 웹소켓 세팅
+백엔드 프론트 엔드 연결
+
+명령어
+npm init -y
+npm i express mongoose cors dotenv http
+npm i socket.io
+npm install nodemon
+
+설명
+npm init -y -> package.json 만들어짐
+npm i express -> 서버 만들기
+mongoose -> 몽고 디비를 좀 더 쉽게 사용하게 도와주는 라이브러리
+cors -> 프론트엔드, 백연결 도와줌
+dotenv 환경 변수를 가져옴
+http -> http 서버를 만듬(웹 소켓을 올림)
+socket.io -> 소켓 통신 라이브러리
+npm install nodemon -> 노드 처럼 실행하는 것. 
