@@ -16,7 +16,14 @@ v2
 npm init -y
 npm i express mongoose cors dotenv http
 npm i socket.io
-npm install nodemon
+npm install -g nodemon
+
+npm install socket.io-client
+
+
+- 실행 명령어 : 
+프론트: npm start
+nodemon index.js
 
 설명
 npm init -y -> package.json 만들어짐
@@ -27,3 +34,4 @@ dotenv 환경 변수를 가져옴
 http -> http 서버를 만듬(웹 소켓을 올림)
 socket.io -> 소켓 통신 라이브러리
 npm install nodemon -> 노드 처럼 실행하는 것. 
+

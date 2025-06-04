@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatting Home</title>
+    <link rel="stylesheet" href="chat_landing.css" />
+    <style>
+      /* ============================================
+   기본 리셋 & 공통 스타일
+   ============================================ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "맑은 고딕", sans-serif;
+        font-size: 14px;
+        color: #333;
+        background-color: #f5f5f5;
+        line-height: 1.5;
+      }
+
+      /* wrapper: 사이드바 + 메인영역을 flex로 배치 */
+      .wrapper {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* ============================================
+   좌측 사이드바 스타일
+   ============================================ */
+      .sidebar {
+        width: 220px;
+        background-color: #fff;
+        border-right: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      /* 사이드바 상단: 프로필 서클 + 로고 텍스트 */
+      .sidebar-top {
+        padding: 24px 16px;
+        text-align: center;
+      }
+
+      .profile-circle {
+        width: 48px;
+        height: 48px;
+        background-color: #ccc;
+        border-radius: 50%;
+        margin: 0 auto 8px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #222;
+      }
+
+      /* 사이드바 메뉴 */
+      .menu {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .menu ul {
+        list-style: none;
+      }
+
+      .menu-heading {
+        padding: 12px 16px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      .menu-item {
+        padding: 10px 16px;
+      }
+
+      .menu-item a {
+        text-decoration: none;
+        color: #333;
+        display: flex;
+        align-items: center;
+      }
+
+      .menu-item a:hover {
+        background-color: #f0f0f0;
+        border-radius: 4px;
+      }
+
+      .menu-item .icon {
+        margin-right: 8px;
+        font-size: 1rem;
+      }
+
+      /* 구분선 */
+      .divider {
+        border-top: 1px solid #eee;
+        margin: 8px 0;
+      }
+
+      /* 사이드바 하단 아이콘 */
+      .sidebar-bottom {
+        padding: 12px 16px;
+        text-align: center;
+        border-top: 1px solid #eee;
+      }
+
+      .sidebar-icon {
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      /* ============================================
+   우측 메인 컨텐츠 영역 스타일
+   ============================================ */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #fafafa;
+      }
+
+      /* 상단 헤더 */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border-bottom: 1px solid #ddd;
+        background-color: #fff;
+      }
+
+      .page-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #222;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+      }
+
+      /* DarkMode 토글 래퍼 */
+      .toggle-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+      }
+
+      .toggle-label {
+        margin-right: 8px;
+        font-size: 0.9rem;
+        color: #555;
+      }
+
+      .toggle-checkbox {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 40px; /* 토글 라벨 뒤쪽에 위치 */
+        width: 40px;
+        height: 20px;
+        background-color: #ccc;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .toggle-slider::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background-color: #fff;
+        border-radius: 50%;
+        transition: 0.2s;
+      }
+
+      /* 체크되면 슬라이더 이동 */
+      .toggle-checkbox:checked + .toggle-slider {
+        background-color: #4caf50;
+      }
+
+      .toggle-checkbox:checked + .toggle-slider::before {
+        transform: translateX(20px);
+      }
+
+      /* 헤더 우측 아이콘 버튼들 */
+      .header-icons {
+        display: flex;
+        align-items: center;
+      }
+
+      .icon-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        margin-left: 16px;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+
+      .icon-btn:hover {
+        color: #007aff;
+      }
+
+      /* 서브제목 */
+      .subtitle {
+        padding: 16px 24px;
+        font-size: 1rem;
+        color: #666;
+      }
+
+      /* ============================================
+   카드(Panel) 영역
+   ============================================ */
+      .cards-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        padding: 24px;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+
+      /* 개별 카드 */
+      .card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: 360px;
+        padding: 24px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      /* 인기 카드 표시용 배지 */
+      .card.popular .badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background-color: #ff5252;
+        color: #fff;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 12px;
+      }
+
+      /* 카드 헤더(아이콘 + 제목) */
+      .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .card-icon {
+        font-size: 1.8rem;
+        margin-right: 8px;
+      }
+
+      .card h2 {
+        font-size: 1.25rem;
+        color: #222;
+      }
+
+      /* 카드 설명 텍스트 */
+      .card-desc {
+        margin-bottom: 16px;
+        color: #555;
+        font-size: 0.95rem;
+      }
+
+      /* 생성 버튼 */
+      .btn-create {
+        background-color: #007aff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 16px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-bottom: 16px;
+        transition: background-color 0.2s;
+      }
+
+      .btn-create:hover {
+        background-color: #005ec5;
+      }
+
+      /* 단체 채널용 빨간 버튼 */
+      .btn-red {
+        background-color: #ff5252;
+      }
+
+      .btn-red:hover {
+        background-color: #e04848;
+      }
+
+      /* 기능 리스트 */
+      .feature-list {
+        list-style: none;
+        padding-left: 16px;
+      }
+
+      .feature-list li {
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: #444;
+      }
+
+      /* 체크 아이콘 */
+      .feature-list li::before {
+        content: "✔";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #4caf50;
+        font-size: 0.9rem;
+      }
+
+      /* ============================================
+   반응형(너비가 좁아지면 카드가 아래로 쌓이도록)
+   ============================================ */
+      @media (max-width: 900px) {
+        .cards-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .card {
+          width: 80%;
+          margin-bottom: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- ===== 좌측 사이드바 ===== -->
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <!-- 원형 프로필/로고(썸네일) -->
+          <div class="profile-circle"></div>
+          <!-- 'J2SM' 로고 텍스트 -->
+          <div class="logo-text">J2SM</div>
+        </div>
+
+        <nav class="menu">
+          <ul>
+            <li class="menu-heading">Chatting</li>
+            <li class="menu-item">
+              <a href="#">+ 채널 추가</a>
+            </li>
+            <li class="divider"></li>
+            <li class="menu-item">
+              <a href="#">홈</a>
+            </li>
+            <li class="menu-item">
+              <a href="#">채널 검색</a>
+            </li>
+            <li class="divider"></li>
+            <li class="menu-item">
+              <a href="#"> <span class="icon">📁</span> 1조 프로젝트 </a>
+            </li>
+            <li class="menu-item">
+              <a href="#"> <span class="icon">📁</span> 동아리 </a>
+            </li>
+            <li class="menu-item">
+              <a href="#"> <span class="icon">📁</span> 코딩 </a>
+            </li>
+            <li class="menu-item">
+              <a href="#"> <span class="icon">📁</span> 점심 </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <!-- 설정 아이콘 예시(툴팁 생략) -->
+          <span class="sidebar-icon">⚙️</span>
+        </div>
+      </aside>
+
+      <!-- ===== 우측 메인 영역 ===== -->
+      <main class="main-content">
+        <!-- 상단 헤더 -->
+        <header class="header">
+          <h1 class="page-title">Chatting</h1>
+          <div class="header-right">
+            <!-- Dark Mode 토글(토글 기능 없이 시각적 예시만) -->
+            <div class="toggle-wrapper">
+              <label class="toggle-label">DarkMode</label>
+              <input type="checkbox" id="darkToggle" class="toggle-checkbox" />
+              <span class="toggle-slider"></span>
+            </div>
+            <!-- 오른쪽 툴아이콘들(도움말, 알림, 메뉴) -->
+            <div class="header-icons">
+              <button class="icon-btn">❔</button>
+              <button class="icon-btn">🔔</button>
+              <button class="icon-btn">☰</button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 서브제목 -->
+        <div class="subtitle">채팅 홈입니다.</div>
+
+        <!-- 메인 카드 영역 -->
+        <section class="cards-container">
+          <!-- 개인 채널 카드 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">💬</div>
+              <h2>개인 채널</h2>
+            </div>
+            <p class="card-desc">1:1로 상대와 대화가 가능합니다.</p>
+            <button class="btn-create">대화방 생성</button>
+            <ul class="feature-list">
+              <li>개인진의 카카오톡 기능을 사용할 수 있습니다.</li>
+              <li>무료 회원은 3명까지 DM이 가능합니다.</li>
+              <li>유료 회원은 무제한으로 DM이 가능합니다.</li>
+              <li>추가된 채널은 카테고리 메뉴에 추가됩니다.</li>
+              <li>채널명을 지정할 수 있습니다.</li>
+            </ul>
+          </div>
+
+          <!-- 단체 채널 카드 -->
+          <div class="card popular">
+            <div class="card-header">
+              <div class="card-icon">💬</div>
+              <h2>단체 채널</h2>
+              <span class="badge">Most Popular</span>
+            </div>
+            <p class="card-desc">회사 사람들을 초대해서 대화가 가능합니다.</p>
+            <button class="btn-create btn-red">대화방 생성</button>
+            <ul class="feature-list">
+              <li>채널 생성자는 자동으로 관리자가 됩니다.</li>
+              <li>다른 회식 사람을 초대할 수 있습니다.</li>
+              <li>무료 회원은 최대 3명까지 가능합니다.</li>
+              <li>유료 회원은 무제한으로 가능합니다.</li>
+              <li>관리자는 채널을 나갈 수 없습니다.</li>
+              <li>관리자 권한을 위임할 수 있습니다.</li>
+              <li>이모티콘이 가능합니다.</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // (선택) Dark Mode 체크박스를 클릭하면 바디에 'dark' 클래스를 토글하여 스타일 변경할 수 있음
+      // 실제 기능을 구현하려면 아래 주석을 해제하고, CSS의 .dark/관련 스타일을 추가하세요.
+
+      // document.getElementById("darkToggle").addEventListener("change", function () {
+      //   document.body.classList.toggle("dark", this.checked);
+      // });
+    </script>
+  </body>
+</html>

@@ -5,8 +5,11 @@ const cors = require("cors");
 const app = express();
 app.use(cors);
 
+const MONGO_URI =
+  "mongodb://root:1234@3.34.124.218:27017/mydb?authSource=admin";
+
 mongoose
-  .connect("mongodb://3.34.124.218:27017/mydb")
+  .connect(MONGO_URI)
   .then(() => console.log("connected to database"))
   .catch("연결 실패");
 /*
