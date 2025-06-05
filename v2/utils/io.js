@@ -1,3 +1,4 @@
+const chatController = require("../Controllers/chat.controller");
 const userController = require("../Controllers/user.controller");
 
 module.exports = function (io) {
@@ -12,6 +13,13 @@ module.exports = function (io) {
 
       try {
         const user = await userController.saveUser(userName, socket.id);
+
+        // 웰컴 메시지
+        const welcomeMessage = {
+          chat: `${user.name} is joined to this room`,
+          user: { id: null, name: "system" },
+        };
+        io.emit("message", welcomeMessage);
         cb({ ok: true, data: user });
         console.log("backend", userName);
       } catch (error) {
@@ -24,9 +32,18 @@ module.exports = function (io) {
     });
 
     // 간단한 메시지 테스트용 이벤트 추가
-    socket.on("test-message", (msg) => {
-      console.log("received test-message:", msg);
-      socket.emit("test-reply", "서버에서 답장!");
+    socket.on("sendMessage", async (message, cb) => {
+      try {
+        // 유처 찾기 socket id로
+        const user = await userController.checkUser(socket.id);
+
+        // 메시지 저장(유저)
+        const newMessage = await chatController.saveChat(message, user);
+        io.emit("message", newMessage);
+        cb({ ok: true });
+      } catch (error) {
+        cb({ ok: false, error: error.message });
+      }
     });
 
     socket.on("connect_error", (err) => {
